@@ -2,7 +2,12 @@
 
     My node version is 20.9.0 so use the same version.
 
-    Down below you can see I commented some lines.
+    The file with the answer in it psolver.js
+
+    If placed on the head of the file tree run:
+        - `node ./psolver`
+
+    Down below you can see I wrote some lines.
     The lines are some of the checks I did for the function feel free to use them and change them if needed :D.
 
 # explenation
