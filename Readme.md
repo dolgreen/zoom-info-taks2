@@ -12,6 +12,8 @@
 
 # explenation
 
+    I didnt add a bash script to run my code but you can find and modify some tests at the bottom of the file (as said in line 11) 
+
     The function psolve(c,d,t) gets 2 | 3 arguments.
     
         - c => number of times the diggit appear.

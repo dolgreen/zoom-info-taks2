@@ -60,18 +60,18 @@ function psolver(c, d, t) {
   }
 }
 
-// Example usage like in bash script
+// // Example usage
+// for (let c = 1; c <= 5; c++) {
+//   for (let d = 2; d <= 9; d++) {
+//     console.log(psolver(c, d));
+//   }
+// }
+
+// Example usage with target
 for (let c = 1; c <= 5; c++) {
   for (let d = 2; d <= 9; d++) {
     for (let t = 1; t <= 9; t++) {
-      console.log(psolver(c, d));
+      console.log(psolver(c, d, t));
     }
   }
 }
-
-// // Example usage like in bash script with target
-// for (let c = 1; c <= 10; c++) {
-//   for (let d = 2; d <= 9; d++) {
-//     console.log(psolver(c, d, 3));
-//   }
-// }
