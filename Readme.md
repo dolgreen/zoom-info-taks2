@@ -4,15 +4,8 @@
 
     The file with the answer in it psolver.js
 
-    If placed on the head of the file tree run:
-        - `node ./psolver`
-
-    Down below you can see I wrote some lines.
-    The lines are some of the checks I did for the function feel free to use them and change them if needed :D.
 
 # explenation
-
-    I didnt add a bash script to run my code but you can find and modify some tests at the bottom of the file (as written above) 
 
     The function psolve(c,d,t) gets 2 | 3 arguments.
     
