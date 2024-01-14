@@ -5,14 +5,14 @@
     The file with the answer in it psolver.js
 
 
-# explenation
+# explanation
 
-    The function psolve(c,d,t) gets 2 | 3 arguments.
+    The mission is to build an algorithem that gets 2 | 3 arguments.
     
-        - c => number of times the diggit appear.
-        - d => the diggit
+        - c => number of times the digit appear.
+        - d => the digit
         - t (optional) => the target
     If there are two arguments it finds the smallest positive number that cannot be produced from my input.
 
     If there are three arguments then the program returns the equation that the program used to reach the target.
-    If its impossible then it will return "t cannot be computed in..."
+    If its impossible then it will return "{target} cannot be computed in..."
