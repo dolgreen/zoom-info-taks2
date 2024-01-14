@@ -188,6 +188,15 @@ function psolver(c, d) {
   }
 }
 
+const checkTargetValidity = (target) => {
+  if (target === undefined) {
+    return undefined;
+  }
+  return isNaN(parseInt(process.argv[4], 10))
+    ? null
+    : parseInt(process.argv[4], 10);
+};
+
 // Parse command line arguments
 const processArgParams = {
   c: isNaN(parseInt(process.argv[2], 10))
@@ -196,13 +205,15 @@ const processArgParams = {
   d: isNaN(parseInt(process.argv[3], 10))
     ? undefined
     : parseInt(process.argv[3], 10),
-  t: isNaN(parseInt(process.argv[4], 10))
-    ? undefined
-    : parseInt(process.argv[4], 10),
+  t: checkTargetValidity(process.argv[4]),
 };
 
 // Run psolver for the given arguments
-if (processArgParams.c !== undefined && processArgParams.d !== undefined) {
+if (
+  processArgParams.c !== undefined &&
+  processArgParams.d !== undefined &&
+  processArgParams.t !== null
+) {
   if (processArgParams.t !== undefined) {
     console.log(
       psolverTarget(processArgParams.c, processArgParams.d, processArgParams.t)
@@ -211,5 +222,10 @@ if (processArgParams.c !== undefined && processArgParams.d !== undefined) {
     psolver(processArgParams.c, processArgParams.d);
   }
 } else {
-  console.log("Invalid input. Please provide values for -c and -d.");
+  if (processArgParams.c === undefined || processArgParams.d === undefined) {
+    console.log("Invalid input. Please provide values for -c, -d.");
+  }
+  if (processArgParams.t === null) {
+    console.log("Invalid input. Please provide value for -t.");
+  }
 }
