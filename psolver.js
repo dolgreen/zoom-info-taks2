@@ -10,12 +10,10 @@ function hasCDOccurrences(str, numberOfTimes, numberToSearchInString) {
 // this flag will turn true when the program found the right solution and there is no need for more solutions
 let flag = false;
 
-function psolver({ c, d, t }) {
+function psolverTarget(c, d, t) {
   if (c === undefined || d === undefined) {
     return "invalid input";
   }
-  // array for all the reachable numbers
-  const reachable = [];
   const operators = ["+", "-", "*", "/"];
   // equation solution
   let solution;
@@ -28,7 +26,6 @@ function psolver({ c, d, t }) {
     if (!hasCDOccurrences(values, c, d)) {
       return;
     }
-    // console.log(values);
     values = values.split(",");
     // Evaluate each value using eval to get the numeric result
     const solutionValues = values.map((value) => eval(value));
@@ -39,14 +36,6 @@ function psolver({ c, d, t }) {
         solution = values[0];
         flag = true;
         return;
-      }
-      // Add the single value to the reachable array
-      if (
-        solutionValues[0] > 0 &&
-        Number.isInteger(solutionValues[0]) &&
-        !reachable.includes(solutionValues[0])
-      ) {
-        reachable.push(solutionValues[0]);
       }
       return;
     }
@@ -80,22 +69,126 @@ function psolver({ c, d, t }) {
       Here is how: ${solution.slice(1, solution.length - 1)} = ${t}`;
     }
   } else {
-    // If target is not provided, find the smallest number that cannot be reached
-    let result = 1;
-    reachable.sort((a, b) => a - b);
-    // console.log(reachable);
-    for (let i = 0; i < reachable.length; i++) {
-      if (result == reachable[i]) {
-        result++;
-      } else {
-        return `${result} cannot be computed in ${c} ${d}s `;
-      }
-    }
-
-    return `${result} cannot be computed in ${c} ${d}s `;
+    return `${t} cannot be computed in ${c} ${d}s `;
   }
 }
 
+function psolver(c, d) {
+  // Memoization Map to store previously calculated results
+  const memo = new Map();
+
+  // Helper function to check if a number is a positive integer
+  function isPositiveInteger(number) {
+    return Number.isInteger(number) && number > 0;
+  }
+
+  // Helper function to remove duplicates from an array
+  function removeDuplicates(array) {
+    return Array.from(new Set(array));
+  }
+
+  // Recursive function to calculate possible results for a given set of numbers
+  function calculate(numbers) {
+    let results = [];
+
+    // Base case: if there's only one number, return it
+    if (numbers.length === 1) {
+      results.push(numbers[0]);
+      return results;
+    }
+
+    // Generate a unique key for the current set of numbers
+    const key = numbers.join(",");
+
+    // If the result for these numbers is already calculated, return it from memo
+    if (memo.has(key)) {
+      return memo.get(key);
+    }
+
+    // Iterate through pairs of numbers and perform various operations
+    for (let i = 0; i < numbers.length - 1; i++) {
+      const a = numbers[i];
+
+      for (let j = i + 1; j < numbers.length; j++) {
+        const b = numbers[j];
+
+        const remainingNumbers = [
+          ...numbers.slice(0, i),
+          ...numbers.slice(i + 1, j),
+          ...numbers.slice(j + 1),
+        ];
+
+        // Perform addition, subtraction, multiplication, and division operations
+        // Recursively calculate results for each operation
+        calculate([...remainingNumbers, a + b]).forEach((result) => {
+          if (isPositiveInteger(result)) {
+            results.push(result);
+          }
+        });
+
+        calculate([...remainingNumbers, a - b]).forEach((result) => {
+          if (isPositiveInteger(result)) {
+            results.push(result);
+          }
+        });
+
+        calculate([...remainingNumbers, b - a]).forEach((result) => {
+          if (isPositiveInteger(result)) {
+            results.push(result);
+          }
+        });
+
+        calculate([...remainingNumbers, a * b]).forEach((result) => {
+          if (isPositiveInteger(result)) {
+            results.push(result);
+          }
+        });
+        // Check for division by zero
+        if (b !== 0) {
+          calculate([...remainingNumbers, a / b]).forEach((result) => {
+            if (isPositiveInteger(result)) {
+              results.push(result);
+            }
+          });
+        }
+
+        if (a !== 0) {
+          calculate([...remainingNumbers, b / a]).forEach((result) => {
+            if (isPositiveInteger(result)) {
+              results.push(result);
+            }
+          });
+        }
+      }
+      // Remove duplicates from the results for the current set of numbers
+      results = [...removeDuplicates(results)];
+    }
+    // Memoize the results for the current set of numbers
+    memo.set(key, results);
+    return results;
+  }
+
+  // Start searching for impossible numbers
+  let impossibleNumber = 1;
+
+  while (true) {
+    // Create an array with 'c' elements, each initialized to 'd'
+    const numbers = Array(c).fill(d);
+    // Calculate possible results for the current set of numbers
+    const possibleResults = calculate(numbers);
+
+    // Check if the current impossibleNumber cannot be computed with the given numbers
+    if (!possibleResults.includes(impossibleNumber)) {
+      console.log(`${impossibleNumber} cannot be computed in ${c} ${d}s`);
+
+      return;
+    }
+    // Move on to the next impossibleNumber
+    impossibleNumber++;
+  }
+}
+
+// Parse command line arguments
 const processArgParams = {
   c: isNaN(parseInt(process.argv[2], 10))
     ? undefined
@@ -108,13 +201,15 @@ const processArgParams = {
     : parseInt(process.argv[4], 10),
 };
 
-console.log(psolver(processArgParams));
-
-// Example usage with target
-// for (let c = 1; c <= 5; c++) {
-//   for (let d = 2; d <= 9; d++) {
-//     for (let t = 1; t <= 9; t++) {
-//       console.log(psolver(c, d, t));
-//     }
-//   }
-// }
+// Run psolver for the given arguments
+if (processArgParams.c !== undefined && processArgParams.d !== undefined) {
+  if (processArgParams.t !== undefined) {
+    console.log(
+      psolverTarget(processArgParams.c, processArgParams.d, processArgParams.t)
+    );
+  } else {
+    psolver(processArgParams.c, processArgParams.d);
+  }
+} else {
+  console.log("Invalid input. Please provide values for -c and -d.");
+}
